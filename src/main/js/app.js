@@ -3,8 +3,9 @@
 const React = require('react');
 const ReactDOM = require('react-dom')
 const client = require('./client');
+const stompClient = require('./websocket-listener')
 
-const root = '/api';
+const root = 'api';
 
 class App extends React.Component {
 	
@@ -17,13 +18,18 @@ class App extends React.Component {
 	
 	componentDidMount() {
 		this.loadRoomsFromServer();
+		
+		stompClient.register([
+        		{route: '/topic/newRoom', callback: this.loadRoomsFromServer},
+        		{route: '/topic/updateRoom', callback: this.loadRoomsFromServer},
+        		{route: '/topic/deleteRoom', callback: this.loadRoomsFromServer}
+        	]);
 	}
 		
 	loadRoomsFromServer() {
 		client({
 			method: 'GET',
-			//path: employee._links.self.href
-			path: 'http://127.0.0.1:8080/api/rooms'
+			path: root+'/rooms'
 		}).done(result => {
 			this.setState({
 				rooms: result.entity._embedded.rooms,
@@ -56,7 +62,7 @@ class RoomBox extends React.Component {
 		
 		return (
 	      <div className="wraper roomList" >
-	      	<h1>XXX診所</h1>
+	      	<h1>*免排隊診所*</h1>
 	      	{roomNodes}
 	      	<input type="button" className="btn" onClick={this.props.onRefresh} value="Refresh!" />
 	      </div>
