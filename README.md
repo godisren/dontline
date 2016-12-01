@@ -2,7 +2,7 @@ command:
 ```bash
 mvn spring-boot:run
 ```
-
+<br>
 h2 database default settings:
 ```bash
 Driver class = org.h2.Driver
